@@ -32,72 +32,73 @@ http://aruizca.com/steps-to-create-a-vagrant-base-box-with-ubuntu-14-04-desktop-
   * Load ISO as part of VM disk and and install.
   * Set user name and password to be 'vagrant'.
   * Unload ISO and restart or change boot order.
-  * Install Guest Additions:
-    ```
-    $ sudo apt-get install -y dkms
-    $ sudo apt-get install -y build-essential linux-headers-$(uname -r)
-    ```
-    * With VM running, go to Devices -> Install Guest Additions CD image.
-    * In case this does not work:
-      ```
-      $ sudo mount /dev/cdrom /mnt
-      $ cd /mnt
-      $ sudo ./VBoxLinuxAdditions.run
-      $ sudo reboot
-      ```
-  * Bring OS installation up-to-date:
-    ```
-    $ sudo apt-get update -y
-    $ sudo apt-get upgrade -y
-    $ sudo shutdown -r now
-    ```
-  * Once rebooted, add vagrant user to sudoers:
-    ```
-    $ sudo su -
-    $ visudo
-    $ vagrant ALL=(ALL) NOPASSWD:ALL
-    ```
-  * Install Vagrant public keys:
-    ```
-    $ mkdir -p /home/vagrant/.ssh
-    $ wget --no-check-certificate
-    https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub -O
-    /home/vagrant/.ssh/authorized_keys
-    $ chmod 0700 /home/vagrant/.ssh
-    $ chmod 0600 /home/vagrant/.ssh/authorized_keys
-    $ chown -R vagrant /home/vagrant/.ssh
-    ```
-  * Install and configure ssh server:
-    ```
-    $ sudo apt-get install -y openssh-server
-    $ sudo vi /etc/ssh/sshd_config
-    ```
-    * Ensure the following are set:
-      * port 22
-      * PubkeyAuthentication yes
-      * AuthorizedKeysFile %h/.ssh/authorized_keys
-      * PermitEmptyPasswords no
-    ```
-    $ service ssh restart
-    ```
-  * Compact:
+* Install Guest Additions:
+  ```
+  $ sudo apt-get install -y dkms
+  $ sudo apt-get install -y build-essential linux-headers-$(uname -r)
+  ```
+  * With VM running, go to Devices -> Install Guest Additions CD image.
+  * In case this does not work:
+  ```
+  $ sudo mount /dev/cdrom /mnt
+  $ cd /mnt
+  $ sudo ./VBoxLinuxAdditions.run
+  $ sudo reboot
+  ```
+* Bring OS installation up-to-date:
+  ```
+  $ sudo apt-get update -y
+  $ sudo apt-get upgrade -y
+  $ sudo shutdown -r now
+  ```
+* Once rebooted, add vagrant user to sudoers:
+  ```
+  $ sudo su -
+  $ visudo
+  $ vagrant ALL=(ALL) NOPASSWD:ALL
+  ```
+* Install Vagrant public keys:
+  ```
+  $ mkdir -p /home/vagrant/.ssh
+  $ wget --no-check-certificate
+  https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub -O
+  /home/vagrant/.ssh/authorized_keys
+  $ chmod 0700 /home/vagrant/.ssh
+  $ chmod 0600 /home/vagrant/.ssh/authorized_keys
+  $ chown -R vagrant /home/vagrant/.ssh
+  ```
+* Install and configure ssh server:
+  ```
+  $ sudo apt-get install -y openssh-server
+  $ sudo vi /etc/ssh/sshd_config
+  ```
+  * Ensure the following are set:
+    * port 22
+    * PubkeyAuthentication yes
+    * AuthorizedKeysFile %h/.ssh/authorized_keys
+    * PermitEmptyPasswords no
+  ```
+  $ service ssh restart
+  ```
+* Compact:
   ```
   $ sudo dd if=/dev/zero of=/EMPTY bs=1M
   $ sudo rm -f /EMPTY
   # Shutdown the machine
   ```
-  * Create Vagrant base box and install (use the name of the VirtualBox VM):
+* Create Vagrant base box and install (use the name of the VirtualBox VM):
   ```
   $ vagrant package --base Ubuntu-14.04.03-64-Desktop
   $ vagrant box add Ubuntu-14.04.03-64-Desktop package.box
   $ vagrant init Ubuntu-14.04.03-64-Desktop
   ```
-  * Enable gui and Vagrantfile. 
-  * Edit Vagrantfile as required.
-  * Enjoy. 
-  * Todos
-    * May need to open settings in VirtualBox and disable and then enable
+* Enable gui and Vagrantfile. 
+* Edit Vagrantfile as required.
+* Enjoy. 
+
+* Todos
+  * May need to open settings in VirtualBox and disable and then enable
     USB before this works. Need to figure out what is going on here.
-    * May want to use a more lightweight desktop environment (e.g., xfce).
+  * May want to use a more lightweight desktop environment (e.g., xfce).
 
 
