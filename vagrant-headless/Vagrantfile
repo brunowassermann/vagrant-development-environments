@@ -1,0 +1,39 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+VM_HOSTNAMES    = ['dev-01']
+VM_IPADDRESSES  = ['10.11.1.100']
+SYNCED_FOLDER = ENV['SYNCED_FOLDER']
+#USER_NAME = ENV['USER']
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+    (1..VM_HOSTNAMES.size).each do |i|
+        config.vm.box = "ubuntu/trusty64"
+        config.vm.box_url = "https://vagrantcloud.com/ubuntu/trusty64"
+        if ENV['SYNCED_FOLDER']
+            puts "You set the SYNCED_FOLDER environment variable to #{SYNCED_FOLDER}."
+            config.vm.synced_folder "#{SYNCED_FOLDER}", "/home/vagrant/development/"
+        else
+            puts "You did not set SYNCED_FOLDER environment variable. Will default to /tmp."
+            config.vm.synced_folder "/tmp", "/home/vagrant/development"
+        end
+
+        config.vm.define "dev#{i}" do |dev|
+            dev.vm.hostname = VM_HOSTNAMES[i-1] + "." + "vagrant.dev"
+            dev.vm.network "private_network", ip: VM_IPADDRESSES[i-1]
+
+            # VirtualBox provider-specific configuration
+            dev.vm.provider :virtualbox do |vb|
+                dev.landrush.enabled = true
+            end
+
+            #dev.vm.provision :shell, :path => "provision.sh", :args => "#{USER_NAME}"
+            dev.vm.provision :shell, :path => "provision.sh"
+            dev.vm.provision :shell, :path => "install_spf13.sh", privileged: false
+        end
+
+        config.ssh.forward_x11 = true
+    end
+end
