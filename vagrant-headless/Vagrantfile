@@ -26,7 +26,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
             # VirtualBox provider-specific configuration
             dev.vm.provider :virtualbox do |vb|
-                dev.landrush.enabled = true
+                #dev.landrush.enabled = true
+                vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
             end
 
             #dev.vm.provision :shell, :path => "provision.sh", :args => "#{USER_NAME}"
